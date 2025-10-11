@@ -1,0 +1,28 @@
+
+
+<div class="container">
+    <h1>{{nombre}}</h1>
+    <hr>
+    <h2>Productos Disponibles</h2>
+    <div id="productos-container">
+        <ul class="card-container">
+            {{#each productos}}
+            <li class="card">
+                <div class="card-content">
+                    <div>
+                        <h5 class="card-title">{{this.nombre}}</h5>
+                        <p class="card-text">Precio: ${{this.precio}}</p>
+                        {{#if this.stock}}
+                            <p class="card-text">Stock: {{this.stock}}</p>
+                        {{else}}
+                            <p class="card-text sin-stock">Sin Stock</p>
+                        {{/if}}
+                        <span class="card-badge">{{this.categoria}}</span>
+                    </div>
+                    <img src="{{this.imagen}}" alt="{{this.nombre}}">
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,98 @@
+[
+  {
+    "id": 7,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 8,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 9,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 11,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 12,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 13,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 14,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 15,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 16,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 18,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 19,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 20,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  }
+]
