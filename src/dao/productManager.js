@@ -14,20 +14,20 @@ class productManager {
             const data = await fs.promises.readFile(this.path, "utf-8");
             return JSON.parse(data);
         } catch (error) {
-            console.error("Error al leer el archivo de productos:", error);
-            throw new Error("No se pudieron obtener los productos.");
+            console.error("Error al leer el archivo de products:", error);
+            throw new Error("No se pudieron obtener los products.");
         }
     }
 
     async addProduct(nuevoProducto) {
         try {
-            const productos = await this.getProducts();
-            const newId = productos.length > 0 ? Math.max(...productos.map(p => Number(p.id))) + 1 : 1;
+            const products = await this.getProducts();
+            const newId = products.length > 0 ? Math.max(...products.map(p => Number(p.id))) + 1 : 1;
             
             nuevoProducto.id = newId;
-            productos.push(nuevoProducto);
+            products.push(nuevoProducto);
 
-            await fs.promises.writeFile(this.path, JSON.stringify(productos, null, 2));
+            await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2));
             
             return nuevoProducto;
         } catch (error) {

@@ -2,24 +2,24 @@ const { Router } = require("express");
 const productManager = require("../dao/productManager.js");
 const path = require("path");
 
-const apiRouter = Router();
+const productsRouter = Router();
 
-const managerProductos = new productManager(path.join(__dirname, "../data", "productos.json"));
+const managerproducts = new productManager(path.join(__dirname, "../data", "products.json"));
 
 const addIo = (req, res, next) => {
     req.io = req.app.get('io');
     next();
 };
 
-apiRouter.get("/productos", async (req, res) => {
-    const productos = await managerProductos.getProducts();
-    res.json(productos);
+productsRouter.get("/products", async (req, res) => {
+    const products = await managerproducts.getProducts();
+    res.json(products);
 });
 
-apiRouter.get("/productos/:pid", async (req, res) => {
+productsRouter.get("/products/:pid", async (req, res) => {
     try {
         const { pid } = req.params;
-        const producto = await managerProductos.getProductById(pid);
+        const producto = await managerproducts.getProductById(pid);
 
         if (!producto) {
             return res.status(404).json({ error: "Producto no encontrado." });
@@ -32,16 +32,17 @@ apiRouter.get("/productos/:pid", async (req, res) => {
     }
 });
 
-apiRouter.post("/productos", addIo, async (req, res) => {
+productsRouter.post("/products", addIo, async (req, res) => {
     const nuevoProducto = req.body;
     try {
         if (!nuevoProducto.nombre || !nuevoProducto.categoria || !nuevoProducto.precio || nuevoProducto.stock === undefined || !nuevoProducto.imagen) {
             return res.status(400).json({ error: "Faltan datos del producto" });
         }
-        const productoAgregado = await managerProductos.addProduct(nuevoProducto);
+        const productoAgregado = await managerproducts.addProduct(nuevoProducto);
         
-        const productosActualizados = await managerProductos.getProducts();
-        req.io.emit("listaProductos", productosActualizados);
+        const productsActualizados = await managerproducts.getProducts();
+        console.log("Productos a emitir:", productsActualizados); 
+        req.io.emit("listaproducts", productsActualizados);
 
         res.status(201).json({ message: "Producto agregado con éxito", producto: productoAgregado });
     } catch (error) {
@@ -50,17 +51,18 @@ apiRouter.post("/productos", addIo, async (req, res) => {
     }
 });
 
-apiRouter.delete("/productos/:pid", addIo, async (req, res) => {
+productsRouter.delete("/products/:pid", addIo, async (req, res) => {
     try {
         const { pid } = req.params;
-        const productoEliminado = await managerProductos.deleteProduct(pid);
+        const productoEliminado = await managerproducts.deleteProduct(pid);
         
         if (!productoEliminado) {
             return res.status(404).json({ error: "Producto no encontrado." });
         }
         
-        const productosActualizados = await managerProductos.getProducts();
-        req.io.emit("listaProductos", productosActualizados);
+        const productsActualizados = await managerproducts.getProducts();
+        console.log("Productos a emitir:", productsActualizados); 
+        req.io.emit("listaproducts", productsActualizados);
 
         res.status(200).json({ message: "Producto eliminado con éxito", producto: productoEliminado });
     } catch (error) {
@@ -69,4 +71,4 @@ apiRouter.delete("/productos/:pid", addIo, async (req, res) => {
     }
 });
 
-module.exports = apiRouter;
+module.exports = productsRouter;

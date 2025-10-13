@@ -1,0 +1,66 @@
+[
+  {
+    "id": 3,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "nombre": "Prueba0 2",
+    "categoria": "Prueba2",
+    "precio": "123456",
+    "stock": "56",
+    "imagen": "asasdasd",
+    "id": 5
+  },
+  {
+    "id": 16,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 30,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 18,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  },
+  {
+    "id": 21,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "asasdasd"
+  },
+  {
+    "nombre": "prueba 3",
+    "categoria": "7",
+    "precio": "51424",
+    "stock": "25424",
+    "imagen": "asdasdasdasd",
+    "id": 7
+  },
+  {
+    "nombre": "estoe s un aprueba",
+    "categoria": "pruebas",
+    "precio": "155555",
+    "stock": "51124124",
+    "imagen": "asdasdasd",
+    "id": 8
+  },
+  {
+    "id": 22,
+    "nombre": "Smartphone X",
+    "categoria": "Electrónica",
+    "precio": 799.99,
+    "stock": 0,
+    "imagen": "https://res.cloudinary.com/dtbbnfylm/image/upload/v1760177440/SmartPhone_X_g9p2lu.webp"
+  }
+]
