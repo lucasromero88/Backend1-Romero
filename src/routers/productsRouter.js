@@ -1,74 +1,165 @@
-const { Router } = require("express");
-const productManager = require("../dao/productManager.js");
-const path = require("path");
+
+
+const { Router } = require('express');
+const { ProductModel } = require('../dao/models/productModel.js');
 
 const productsRouter = Router();
 
-const managerproducts = new productManager(path.join(__dirname, "../data", "products.json"));
+productsRouter.get('/', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const sortParam = req.query.sort;   
+    const queryParam = req.query.query;  
 
-const addIo = (req, res, next) => {
-    req.io = req.app.get('io');
-    next();
-};
-
-productsRouter.get("/products", async (req, res) => {
-    const products = await managerproducts.getProducts();
-    res.json(products);
-});
-
-productsRouter.get("/products/:pid", async (req, res) => {
-    try {
-        const { pid } = req.params;
-        const producto = await managerproducts.getProductById(pid);
-
-        if (!producto) {
-            return res.status(404).json({ error: "Producto no encontrado." });
-        }
-
-        res.status(200).json(producto);
-    } catch (error) {
-        console.error("Error al obtener el producto por ID:", error);
-        res.status(500).json({ error: "Error en el servidor." });
+    
+    const filter = {};
+    if (queryParam) {
+      if (queryParam === 'true' || queryParam === 'false') {
+        filter.status = queryParam === 'true';
+      } else {
+        filter.categoria = queryParam;
+      }
     }
+
+    let sortOptions = {};
+    if (sortParam === 'asc') {
+      sortOptions = { precio: 1 };
+    } else if (sortParam === 'desc') {
+      sortOptions = { precio: -1 };
+    }
+
+    const totalDocs = await ProductModel.countDocuments(filter);
+    const totalPages = Math.ceil(totalDocs / limit);
+    const skip = (page - 1) * limit;
+
+    const products = await ProductModel.find(filter)
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const hasPrevPage = page > 1;
+    const hasNextPage = page < totalPages;
+
+    const prevPage = hasPrevPage ? page - 1 : null;
+    const nextPage = hasNextPage ? page + 1 : null;
+
+    const baseUrl = `/api/products`;
+
+    const makeLink = (targetPage) => {
+      if (!targetPage) return null;
+      const params = new URLSearchParams();
+      params.set('page', targetPage);
+      params.set('limit', limit.toString());
+      if (sortParam) params.set('sort', sortParam);
+      if (queryParam) params.set('query', queryParam);
+      return `${baseUrl}?${params.toString()}`;
+    };
+
+    return res.json({
+      status: "success",
+      payload: products,
+      totalPages,
+      prevPage,
+      nextPage,
+      page,
+      hasPrevPage,
+      hasNextPage,
+      prevLink: makeLink(prevPage),
+      nextLink: makeLink(nextPage)
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      error: err.message
+    });
+  }
 });
 
-productsRouter.post("/products", addIo, async (req, res) => {
+productsRouter.get('/:pid', async (req, res) => {
+  try {
+    const { pid } = req.params;
+    const producto = await ProductModel.findById(pid).lean();
+    if (!producto) {
+      return res.status(404).json({
+        status: "error",
+        error: "Producto no encontrado"
+      });
+    }
+    return res.json({
+      status: "success",
+      payload: producto
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      error: err.message
+    });
+  }
+});
+
+productsRouter.post('/', async (req, res) => {
+  try {
     const nuevoProducto = req.body;
-    try {
-        if (!nuevoProducto.nombre || !nuevoProducto.categoria || !nuevoProducto.precio || nuevoProducto.stock === undefined || !nuevoProducto.imagen) {
-            return res.status(400).json({ error: "Faltan datos del producto" });
-        }
-        const productoAgregado = await managerproducts.addProduct(nuevoProducto);
-        
-        const productsActualizados = await managerproducts.getProducts();
-        console.log("Productos a emitir:", productsActualizados); 
-        req.io.emit("listaproducts", productsActualizados);
 
-        res.status(201).json({ message: "Producto agregado con éxito", producto: productoAgregado });
-    } catch (error) {
-        console.error("Error al agregar el producto:", error);
-        res.status(500).json({ error: "Error en el servidor" });
+    if (
+      !nuevoProducto.nombre ||
+      !nuevoProducto.categoria ||
+      nuevoProducto.precio === undefined ||
+      nuevoProducto.stock === undefined ||
+      !nuevoProducto.imagen
+    ) {
+      return res.status(400).json({
+        status: "error",
+        error: "Faltan datos del producto"
+      });
     }
+
+    const creado = await ProductModel.create(nuevoProducto);
+
+    const io = req.app.get('io');
+    const productsActualizados = await ProductModel.find().lean();
+    io.emit('listaproducts', productsActualizados);
+
+    return res.status(201).json({
+      status: "success",
+      payload: creado
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      error: err.message
+    });
+  }
 });
 
-productsRouter.delete("/products/:pid", addIo, async (req, res) => {
-    try {
-        const { pid } = req.params;
-        const productoEliminado = await managerproducts.deleteProduct(pid);
-        
-        if (!productoEliminado) {
-            return res.status(404).json({ error: "Producto no encontrado." });
-        }
-        
-        const productsActualizados = await managerproducts.getProducts();
-        console.log("Productos a emitir:", productsActualizados); 
-        req.io.emit("listaproducts", productsActualizados);
+productsRouter.delete('/:pid', async (req, res) => {
+  try {
+    const { pid } = req.params;
+    const eliminado = await ProductModel.findByIdAndDelete(pid);
 
-        res.status(200).json({ message: "Producto eliminado con éxito", producto: productoEliminado });
-    } catch (error) {
-        console.error("Error al eliminar el producto:", error);
-        res.status(500).json({ error: "Error en el servidor" });
+    if (!eliminado) {
+      return res.status(404).json({
+        status: "error",
+        error: "Producto no encontrado"
+      });
     }
+
+    const io = req.app.get('io');
+    const productsActualizados = await ProductModel.find().lean();
+    io.emit('listaproducts', productsActualizados);
+
+    return res.json({
+      status: "success",
+      payload: eliminado
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      error: err.message
+    });
+  }
 });
 
 module.exports = productsRouter;

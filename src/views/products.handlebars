@@ -1,0 +1,33 @@
+<div class="container">
+  <h1>Productos</h1>
+  <ul class="card-container">
+    {{#each products}}
+      <li class="card">
+        <div class="card-content">
+          <div>
+            <h5 class="card-title">{{this.nombre}}</h5>
+            <p class="card-text">Precio: ${{this.precio}}</p>
+            {{#if this.stock}}
+              <p class="card-text">Stock: {{this.stock}}</p>
+            {{else}}
+              <p class="card-text sin-stock">Sin Stock</p>
+            {{/if}}
+            <span class="card-badge">{{this.categoria}}</span>
+          </div>
+          <img src="{{this.imagen}}" alt="{{this.nombre}}">
+        </div>
+        <a href="/products/{{this._id}}">Ver detalle</a>
+      </li>
+    {{/each}}
+  </ul>
+
+  <div class="pagination">
+    {{#if hasPrevPage}}
+      <a href="/products?page={{prevPage}}">Anterior</a>
+    {{/if}}
+    <span>Página {{page}} de {{totalPages}}</span>
+    {{#if hasNextPage}}
+      <a href="/products?page={{nextPage}}">Siguiente</a>
+    {{/if}}
+  </div>
+</div>

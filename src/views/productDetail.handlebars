@@ -1,0 +1,131 @@
+
+<div class="container">
+  <h1>{{product.nombre}}</h1>
+  <img src="{{product.imagen}}" alt="{{product.nombre}}" style="max-width:200px;">
+  <p>Precio: ${{product.precio}}</p>
+  <p>Categoría: {{product.categoria}}</p>
+  {{#if product.stock}}
+    <p>Stock: {{product.stock}}</p>
+  {{else}}
+    <p class="sin-stock">Sin Stock</p>
+  {{/if}}
+
+  <div style="margin-top:20px;">
+    <label for="qtyInput">Cantidad:</label>
+    <input id="qtyInput"
+           type="number"
+           min="1"
+           max="{{product.stock}}"
+           value="1"
+           style="width:60px;">
+    <button id="addToCartBtn">Agregar al carrito</button>
+    <button id="goCartBtn">Ir al carrito</button>
+  </div>
+</div>
+
+<script>
+const PRODUCT_ID = "{{product._id}}";
+
+async function ensureCartId() {
+    let cartId = localStorage.getItem('cartId');
+    if (cartId) {
+        return cartId;
+    }
+
+    // No hay carrito -> lo creo con POST /api/carts
+    try {
+        const resp = await fetch('/api/carts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        });
+
+        if (!resp.ok) {
+            alert('No se pudo inicializar el carrito');
+            return null;
+        }
+
+        const data = await resp.json();
+        const newId = data?.payload?._id;
+        if (!newId) {
+            alert('No vino el ID del carrito');
+            return null;
+        }
+
+        localStorage.setItem('cartId', newId);
+        console.log('Carrito inicializado automáticamente:', newId);
+        return newId;
+    } catch (err) {
+        console.error('Error creando carrito:', err);
+        alert('Error de red creando carrito');
+        return null;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Asegurar carrito apenas carga
+    const cartId = await ensureCartId();
+    if (!cartId) {
+        console.warn('No se pudo obtener/crear un cartId');
+    }
+
+    const btn = document.getElementById('addToCartBtn');
+    const qtyField = document.getElementById('qtyInput');
+
+    btn.addEventListener('click', async () => {
+        const quantity = parseInt(qtyField.value, 10);
+
+        // re-chequeo por si el user limpió el localStorage
+        let currentCartId = localStorage.getItem('cartId');
+        if (!currentCartId) {
+            currentCartId = await ensureCartId();
+            if (!currentCartId) {
+                alert("No se pudo obtener un carrito.");
+                return;
+            }
+        }
+
+        try {
+            const resp = await fetch(`/api/carts/${currentCartId}/products/${PRODUCT_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity })
+            });
+
+            if (!resp.ok) {
+                const errData = await resp.json().catch(() => ({}));
+                console.error("Error del servidor:", errData);
+                alert("No se pudo agregar al carrito.");
+                return;
+            }
+
+            const data = await resp.json();
+            console.log("Carrito actualizado:", data);
+
+            alert("Producto agregado al carrito!");
+
+            // Si querés redirigir al carrito después:
+            // window.location.href = `/carts/${currentCartId}`;
+        } catch (err) {
+            console.error(err);
+            alert("Error de red / fetch.");
+        }
+    });
+});
+
+  const goBtn = document.getElementById('goCartBtn');
+  if (goBtn) {
+    goBtn.addEventListener('click', () => {
+      const cid = localStorage.getItem('cartId');
+      if (!cid) {
+        alert('Todavía no tenés carrito.');
+        return;
+      }
+      window.location.href = `/carts/${cid}`;
+    });
+  }
+</script>
