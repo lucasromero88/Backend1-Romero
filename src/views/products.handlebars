@@ -16,7 +16,12 @@
           </div>
           <img src="{{this.imagen}}" alt="{{this.nombre}}">
         </div>
-        <a href="/products/{{this._id}}">Ver detalle</a>
+        {{!-- <a href="/products/{{this._id}}">Ver detalle</a> --}}
+         <div class="card-actions" style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+          <input type="number" class="qty-input" min="1" value="1" style="width:70px;">
+          <button class="btn-add" data-pid="{{this._id}}">Agregar al carrito</button>
+          <a href="/products/{{this._id}}">Ver detalle</a>
+        </div>
       </li>
     {{/each}}
   </ul>
@@ -31,3 +36,5 @@
     {{/if}}
   </div>
 </div>
+
+<script src="/js/addToCartList.js"></script>
